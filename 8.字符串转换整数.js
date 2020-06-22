@@ -2,7 +2,7 @@
  * @Author: yushijun
  * @Date: 2020-06-22 14:54:57
  * @LastEditors: yushijun
- * @LastEditTime: 2020-06-22 16:55:37
+ * @LastEditTime: 2020-06-22 17:28:51
  */
 // 示例 1:
 
@@ -31,6 +31,21 @@
 // 输出: -2147483648
 // 解释: 数字 "-91283472332" 超过 32 位有符号整数范围。
 //      因此返回 INT_MIN (−231) 。
+// 第一种parseInt
+
+// var myAtoi = function(str) {
+//   const number = parseInt(str, 10);
+
+//   if(isNaN(number)) {
+//       return 0;
+//   } else if (number < Math.pow(-2, 31) || number > Math.pow(2, 31) - 1) {
+//       return number < Math.pow(-2, 31) ? Math.pow(-2, 31) : Math.pow(2, 31) - 1;
+//   } else {
+//       return number;
+//   }
+// };
+
+// 第二种
 var myAtoi = function (x) {
   if (x === '-') {
     return 0
@@ -38,24 +53,24 @@ var myAtoi = function (x) {
   if (x === '+') {
     return 0
   }
-  x = x.replace(/\s/g, '')
+  x = x.replace(/(^\s*)|(\s*$)/g, '')
   let str = ''
   if (!Number.isNaN(Number(x)) && !x.includes('e')) {
     if (Number(x) > 0 && Math.abs(Number(x)) > Math.pow(2, 31)) {
-      return Math.pow(2, 31)
+      return Math.pow(2, 31) - 1
     } else if (Number(x) < 0 && Math.abs(Number(x)) > Math.pow(2, 31)) {
       return - Math.pow(2, 31)
     }
   }
   for (let i = 0; i < x.length; i++) {
-    if (i == 0 && x[i] !== '-' && Number.isNaN(Number(x[i]))) {
+    if (i == 0 && x[i] !== '-' && x[i] !== '+' && Number.isNaN(Number(x[i]))) {
       str = 0
       break
     } else if (i == 0 && (x[i] === '-' || x[i] === '+')) {
       if (x[i] === '-') {
         str = str + x[i]
       }
-    } else if (x[i] === '') {
+    } else if (x[i] === ' ') {
       break
     } else if (!Number.isNaN(Number(x[i]))) {
       str = str + x[i]
@@ -63,5 +78,13 @@ var myAtoi = function (x) {
       break
     }
   }
-  return Number(str)
-};
+  if (Number.isNaN(Number(str))) {
+    return 0
+  } else if (Number(str) > 0 && Math.abs(Number(str)) >= Math.pow(2, 31)) {
+    return Math.pow(2, 31) - 1
+  } else if (Number(str) < 0 && Math.abs(Number(str)) >= Math.pow(2, 31)) {
+    return - Math.pow(2, 31)
+  } else {
+    return Number(str)
+  }
+}
